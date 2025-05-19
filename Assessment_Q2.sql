@@ -1,10 +1,11 @@
+-- Calculate average transactions per month per customer and categorize frequency
 WITH customer_txns AS (
     SELECT
         u.id AS owner_id,
         COUNT(s.id) AS total_transactions,
-        -- Calculate months active: difference between first and last transaction dates (minimum 1 month to avoid divide by zero)
+        -- Calculate months active as difference between first and last transaction dates (minimum 1 month)
         GREATEST(DATEDIFF(MAX(s.transaction_date), MIN(s.transaction_date)) / 30.0, 1) AS months_active,
-        -- Average transactions per month (floating point)
+        -- Average transactions per month
         COUNT(s.id) / GREATEST(DATEDIFF(MAX(s.transaction_date), MIN(s.transaction_date)) / 30.0, 1) AS avg_txns_per_month
     FROM users_customuser u
     JOIN savings_savingsaccount s ON s.owner_id = u.id
