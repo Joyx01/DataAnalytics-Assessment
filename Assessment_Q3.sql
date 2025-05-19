@@ -1,8 +1,12 @@
+-- Find active plans (Savings or Investment) with no inflow transactions in the last 365 days
+
 WITH dataset_end AS (
+    -- Get the latest transaction date in the dataset
     SELECT DATE(MAX(transaction_date)) AS max_date
     FROM savings_savingsaccount
 ),
 last_inflows AS (
+    -- Get last inflow transaction date per plan
     SELECT
         p.id AS plan_id,
         p.owner_id,
@@ -21,6 +25,7 @@ last_inflows AS (
     GROUP BY p.id, p.owner_id, p.is_regular_savings, p.is_a_fund
 ),
 inactivity_check AS (
+    -- Calculate days since last inflow transaction
     SELECT
         li.plan_id,
         li.owner_id,
